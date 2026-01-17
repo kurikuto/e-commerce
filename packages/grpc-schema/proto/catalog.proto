@@ -1,0 +1,220 @@
+// Protocol Buffers バージョン3を使用
+syntax = "proto3";
+
+// Javaパッケージ設定（Kotlin互換）
+option java_multiple_files = true;
+option java_package = "com.ecommerce.catalog.proto";
+option java_outer_classname = "CatalogServiceProto";
+
+// パッケージ宣言
+package ecommerce.catalog;
+
+/**
+ * 商品カタログサービス
+ * 
+ * 商品情報の取得・管理を行うサービスです。
+ * DDDにおける境界づけられたコンテキスト「Catalog」に対応します。
+ */
+service CatalogService {
+  // 商品一覧を取得
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+  
+  // 商品詳細を取得
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+  
+  // 商品を作成
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse);
+  
+  // 商品を更新
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
+}
+
+/**
+ * 商品エンティティ
+ * 
+ * DDDにおけるエンティティです。
+ * 一意なIDを持ち、ライフサイクル全体を通じて追跡されます。
+ */
+message Product {
+  // 商品ID（UUID形式）
+  string id = 1;
+  
+  // テナントID（マルチテナント対応）
+  string tenant_id = 2;
+  
+  // 商品名
+  string name = 3;
+  
+  // 商品説明
+  string description = 4;
+  
+  // 価格（単位: 円）
+  int64 price = 5;
+  
+  // 在庫数
+  int32 stock_quantity = 6;
+  
+  // カテゴリID
+  string category_id = 7;
+  
+  // SKU（Stock Keeping Unit: 在庫管理コード）
+  string sku = 8;
+  
+  // 商品ステータス
+  ProductStatus status = 9;
+  
+  // 作成日時（Unix timestamp, ミリ秒）
+  int64 created_at = 10;
+  
+  // 更新日時（Unix timestamp, ミリ秒）
+  int64 updated_at = 11;
+}
+
+/**
+ * 商品ステータス列挙型
+ * 
+ * 商品のライフサイクルにおける状態を表現します。
+ */
+enum ProductStatus {
+  // 未指定（デフォルト値）
+  PRODUCT_STATUS_UNSPECIFIED = 0;
+  
+  // 下書き（公開前）
+  PRODUCT_STATUS_DRAFT = 1;
+  
+  // 公開中
+  PRODUCT_STATUS_ACTIVE = 2;
+  
+  // 非公開
+  PRODUCT_STATUS_INACTIVE = 3;
+  
+  // アーカイブ済み
+  PRODUCT_STATUS_ARCHIVED = 4;
+}
+
+/**
+ * 商品一覧取得リクエスト
+ */
+message ListProductsRequest {
+  // テナントID（必須）
+  string tenant_id = 1;
+  
+  // ページネーション: ページ番号（1始まり）
+  int32 page = 2;
+  
+  // ページネーション: 1ページあたりの件数
+  int32 page_size = 3;
+  
+  // フィルタ: 商品名での部分一致検索
+  string name_filter = 4;
+  
+  // フィルタ: カテゴリID
+  string category_id_filter = 5;
+  
+  // フィルタ: ステータス
+  ProductStatus status_filter = 6;
+}
+
+/**
+ * 商品一覧取得レスポンス
+ */
+message ListProductsResponse {
+  // 商品リスト
+  repeated Product products = 1;
+  
+  // 総件数（ページネーション用）
+  int32 total_count = 2;
+  
+  // 現在のページ番号
+  int32 current_page = 3;
+  
+  // 総ページ数
+  int32 total_pages = 4;
+}
+
+/**
+ * 商品詳細取得リクエスト
+ */
+message GetProductRequest {
+  // 商品ID
+  string id = 1;
+  
+  // テナントID
+  string tenant_id = 2;
+}
+
+/**
+ * 商品詳細取得レスポンス
+ */
+message GetProductResponse {
+  // 商品情報
+  Product product = 1;
+}
+
+/**
+ * 商品作成リクエスト
+ */
+message CreateProductRequest {
+  // テナントID
+  string tenant_id = 1;
+  
+  // 商品名
+  string name = 2;
+  
+  // 商品説明
+  string description = 3;
+  
+  // 価格
+  int64 price = 4;
+  
+  // 在庫数
+  int32 stock_quantity = 5;
+  
+  // カテゴリID
+  string category_id = 6;
+  
+  // SKU
+  string sku = 7;
+}
+
+/**
+ * 商品作成レスポンス
+ */
+message CreateProductResponse {
+  // 作成された商品情報
+  Product product = 1;
+}
+
+/**
+ * 商品更新リクエスト
+ */
+message UpdateProductRequest {
+  // 商品ID
+  string id = 1;
+  
+  // テナントID
+  string tenant_id = 2;
+  
+  // 更新する商品名（オプショナル）
+  optional string name = 3;
+  
+  // 更新する商品説明（オプショナル）
+  optional string description = 4;
+  
+  // 更新する価格（オプショナル）
+  optional int64 price = 5;
+  
+  // 更新する在庫数（オプショナル）
+  optional int32 stock_quantity = 6;
+  
+  // 更新するステータス（オプショナル）
+  optional ProductStatus status = 7;
+}
+
+/**
+ * 商品更新レスポンス
+ */
+message UpdateProductResponse {
+  // 更新された商品情報
+  Product product = 1;
+}

@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ecommerce.common.proto";
+option java_outer_classname = "CommonProto";
+
+package ecommerce.common;
+
+/**
+ * エラー情報
+ * 
+ * gRPC Status とは別に、アプリケーション層でのエラー詳細を提供します。
+ */
+message Error {
+  // エラーコード（アプリケーション固有）
+  string code = 1;
+  
+  // エラーメッセージ
+  string message = 2;
+  
+  // エラー詳細（デバッグ用）
+  repeated ErrorDetail details = 3;
+}
+
+/**
+ * エラー詳細
+ */
+message ErrorDetail {
+  // フィールド名（バリデーションエラーの場合）
+  string field = 1;
+  
+  // 詳細メッセージ
+  string message = 2;
+}
+
+/**
+ * ページネーション情報
+ */
+message Pagination {
+  // 現在のページ番号（1始まり）
+  int32 page = 1;
+  
+  // 1ページあたりの件数
+  int32 page_size = 2;
+  
+  // 総件数
+  int32 total_count = 3;
+  
+  // 総ページ数
+  int32 total_pages = 4;
+}

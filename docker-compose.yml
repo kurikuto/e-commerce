@@ -1,0 +1,114 @@
+# ================================================================
+# Docker Compose 設定ファイル
+# ================================================================
+# ローカル開発環境用のコンテナ構成を定義します。
+# 以下のサービスを含みます：
+# - PostgreSQL: データベース
+# - Redis: キャッシュと分散ロック
+# - Envoy: gRPC-Webプロキシ
+# ================================================================
+
+version: '3.8'
+
+services:
+  # ----------------------------------------------------------
+  # PostgreSQL データベース
+  # ----------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: ecommerce-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecommerce
+      # 日本語ロケール設定
+      LANG: ja_JP.UTF-8
+      TZ: Asia/Tokyo
+    ports:
+      - "5432:5432"
+    volumes:
+      # データの永続化
+      - postgres_data:/var/lib/postgresql/data
+      # 初期化スクリプト
+      - ./docker/init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-network
+
+  # ----------------------------------------------------------
+  # Redis キャッシュ・分散ロック
+  # ----------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: ecommerce-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      # データの永続化
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-network
+
+  # ----------------------------------------------------------
+  # Envoy Proxy - gRPC-Web変換
+  # ----------------------------------------------------------
+  envoy:
+    image: envoyproxy/envoy:v1.29-latest
+    container_name: ecommerce-envoy
+    ports:
+      # gRPC-Web用ポート
+      - "8081:8081"
+      # 管理UI
+      - "9901:9901"
+    volumes:
+      # Envoy設定ファイル
+      - ./docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml
+    command: /usr/local/bin/envoy -c /etc/envoy/envoy.yaml
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ecommerce-network
+
+  # ----------------------------------------------------------
+  # pgAdmin - PostgreSQL管理UI（オプショナル）
+  # ----------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ecommerce-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - ecommerce-network
+
+# ================================================================
+# ネットワーク定義
+# ================================================================
+networks:
+  ecommerce-network:
+    driver: bridge
+
+# ================================================================
+# ボリューム定義
+# ================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

@@ -1,0 +1,32 @@
+{
+  "recommendations": [
+    // TypeScript/JavaScript
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+
+    // React
+    "dsznajder.es7-react-js-snippets",
+
+    // Kotlin
+    "fwcd.kotlin",
+    "mathiasfrohlich.kotlin",
+
+    // Protocol Buffers
+    "zxh404.vscode-proto3",
+
+    // Docker
+    "ms-azuretools.vscode-docker",
+
+    // Git
+    "eamodio.gitlens",
+
+    // Utilities
+    "christian-kohler.path-intellisense",
+    "editorconfig.editorconfig",
+    "gruntfuggly.todo-tree",
+    "yzhang.markdown-all-in-one",
+
+    // Theme (Optional)
+    "github.github-vscode-theme"
+  ]
+}

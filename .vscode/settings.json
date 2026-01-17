@@ -1,0 +1,95 @@
+{
+  // Editor Settings
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.rulers": [100, 120],
+
+  // File Settings
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.encoding": "utf8",
+
+  // TypeScript Settings
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+
+  // JavaScript/TypeScript Formatting
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // Kotlin Settings
+  "[kotlin]": {
+    "editor.tabSize": 4,
+    "editor.defaultFormatter": "fwcd.kotlin"
+  },
+
+  // Exclude from file explorer
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/*.log": true
+  },
+
+  // Search Settings
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/pnpm-lock.yaml": true,
+    "**/*.pb.ts": true,
+    "**/*.pb.kt": true
+  },
+
+  // ESLint Settings
+  "eslint.enable": true,
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  // Prettier Settings
+  "prettier.enable": true,
+  "prettier.requireConfig": true,
+
+  // Terminal Settings
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.cwd": "${workspaceFolder}",
+
+  // Git Settings
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+
+  // NPM Scripts
+  "npm.packageManager": "pnpm",
+
+  // Path Intellisense
+  "path-intellisense.mappings": {
+    "@": "${workspaceFolder}/apps/admin-panel/src",
+    "@components": "${workspaceFolder}/apps/admin-panel/src/components",
+    "@pages": "${workspaceFolder}/apps/admin-panel/src/pages",
+    "@services": "${workspaceFolder}/apps/admin-panel/src/services",
+    "@types": "${workspaceFolder}/apps/admin-panel/src/types"
+  }
+}
