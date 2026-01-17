@@ -1,24 +1,17 @@
 /**
  * 商品一覧ページ
- * 
+ *
  * 商品の一覧表示と基本的なCRUD操作を提供します。
  */
 
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import {
-  Button,
-  SearchBox,
-  Spinner,
-  makeStyles,
-  tokens,
-  Badge,
-} from '@fluentui/react-components';
+import { formatDateTime, formatPrice } from '@ecommerce/shared-utils';
+import { DataTable, DataTableColumn, PageHeader } from '@ecommerce/ui-core';
+import { Badge, Button, SearchBox, Spinner, makeStyles, tokens } from '@fluentui/react-components';
 import { Add24Regular } from '@fluentui/react-icons';
-import { PageHeader, DataTable, DataTableColumn } from '@ecommerce/ui-core';
-import { formatPrice, formatDateTime } from '@ecommerce/shared-utils';
-import { Product } from '@types/product';
 import { fetchProducts } from '@services/productService';
+import { useQuery } from '@tanstack/react-query';
+import { Product } from '@types/product';
+import { useState } from 'react';
 
 const useStyles = makeStyles({
   filters: {
@@ -56,7 +49,7 @@ function ProductStatusBadge({ status }: { status: Product['status'] }) {
 
 /**
  * ProductListPageコンポーネント
- * 
+ *
  * 商品一覧ページのメインコンポーネントです。
  * React Queryによるデータフェッチとキャッシングを使用します。
  */
@@ -149,7 +142,13 @@ export default function ProductListPage() {
         )}
 
         {isError && (
-          <div style={{ padding: '40px', textAlign: 'center', color: tokens.colorPaletteRedForeground1 }}>
+          <div
+            style={{
+              padding: '40px',
+              textAlign: 'center',
+              color: tokens.colorPaletteRedForeground1,
+            }}
+          >
             エラーが発生しました: {error instanceof Error ? error.message : '不明なエラー'}
           </div>
         )}

@@ -44,15 +44,15 @@
     "editor.defaultFormatter": "fwcd.kotlin"
   },
 
-  // Exclude from file explorer
-  "files.exclude": {
-    "**/.git": true,
-    "**/.DS_Store": true,
-    "**/node_modules": true,
-    "**/dist": true,
-    "**/build": true,
-    "**/*.log": true
-  },
+  // // Exclude from file explorer
+  // "files.exclude": {
+  //   "**/.git": true,
+  //   "**/.DS_Store": true,
+  //   "**/node_modules": true,
+  //   "**/dist": true,
+  //   "**/build": true,
+  //   "**/*.log": true
+  // },
 
   // Search Settings
   "search.exclude": {

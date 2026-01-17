@@ -1,16 +1,7 @@
-/**
- * gRPC スキーマパッケージ
- * 
- * このパッケージは、Protocol Buffersによるスキーマ定義を管理します。
- * ここで定義されたスキーマから、TypeScriptとKotlinのコードが自動生成されます。
- * 
- * Single Source of Truth として機能し、フロントエンドとバックエンドの
- * 型安全性を保証します。
- */
 {
   "name": "@ecommerce/grpc-schema",
   "version": "1.0.0",
-  "description": "Protocol Buffers schema definitions",
+  "description": "Protocol Buffers schema definitions for gRPC. Single Source of Truth for TypeScript and Kotlin code generation.",
   "private": true,
   "scripts": {
     "proto:generate": "npm run proto:generate:ts && npm run proto:generate:kt",

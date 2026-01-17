@@ -5,11 +5,21 @@
  * ユーティリティ関数やバリデーション、型定義を提供します。
  */
 
+// Date/Time utilities
 export * from './datetime';
+
+// Error handling
 export * from './errors';
+
+// Formatters (price only, datetime formatting is in ./datetime)
 export * from './formatters';
-export * from './types';
+
+// Type definitions (use types-global as the primary source)
 export * from './types-global';
-export * from './types-react';
+
+// Note: types-react is available but not exported by default
+// Import directly: import { WithChildren } from '@ecommerce/shared-utils/types-react'
+
+// Utilities
 export * from './uuid';
 export * from './validation';
