@@ -1,6 +1,6 @@
 /**
  * Infrastructure Layer - gRPC Service Implementation
- * 
+ *
  * gRPCサービスの実装です。
  * Protocol Buffersで定義されたサービスを実装し、
  * ユースケースを呼び出します。
@@ -16,46 +16,49 @@ import io.grpc.Status
 import io.grpc.StatusException
 import mu.KotlinLogging
 
+// gRPC型とユースケース型の名前衝突を避けるため型エイリアスを使用
+import com.ecommerce.inventory.usecase.CreateProductRequest as UseCaseCreateProductRequest
+
 private val logger = KotlinLogging.logger {}
 
 /**
  * カタログサービスのgRPC実装
- * 
+ *
  * プレゼンテーション層として、外部からのリクエストを受け取り、
  * ユースケースに委譲します。
  */
 class CatalogGrpcService : CatalogServiceGrpcKt.CatalogServiceCoroutineImplBase() {
-    
+
     // 依存性の注入（本番環境ではDIコンテナを使用）
     private val productRepository = ProductRepositoryImpl()
     private val getProductUseCase = GetProductUseCase(productRepository)
     private val listProductsUseCase = ListProductsUseCase(productRepository)
     private val createProductUseCase = CreateProductUseCase(productRepository)
-    
+
     /**
      * 商品一覧を取得
-     * 
+     *
      * gRPCリクエストをドメインロジックに変換し、
      * 結果をgRPCレスポンスに変換して返します。
      */
-    override suspend fun listProducts(request: CatalogProto.ListProductsRequest): CatalogProto.ListProductsResponse {
+    override suspend fun listProducts(request: ListProductsRequest): ListProductsResponse {
         return try {
             logger.info { "gRPC: ListProducts - tenantId=${request.tenantId}" }
-            
+
             // バリデーション
             if (request.tenantId.isBlank()) {
                 throw StatusException(Status.INVALID_ARGUMENT.withDescription("テナントIDは必須です"))
             }
-            
+
             // ユースケース実行
             val result = listProductsUseCase.execute(
                 tenantId = request.tenantId,
                 page = if (request.page > 0) request.page else 1,
                 pageSize = if (request.pageSize > 0) request.pageSize else 20
             )
-            
+
             // gRPCレスポンスに変換
-            CatalogProto.ListProductsResponse.newBuilder()
+            ListProductsResponse.newBuilder()
                 .addAllProducts(result.items.map { it.toProto() })
                 .setTotalCount(result.totalCount)
                 .setCurrentPage(result.currentPage)
@@ -64,7 +67,7 @@ class CatalogGrpcService : CatalogServiceGrpcKt.CatalogServiceCoroutineImplBase(
                 .also {
                     logger.info { "gRPC: ListProducts成功 - 件数=${result.items.size}" }
                 }
-            
+
         } catch (e: StatusException) {
             throw e
         } catch (e: Exception) {
@@ -72,33 +75,33 @@ class CatalogGrpcService : CatalogServiceGrpcKt.CatalogServiceCoroutineImplBase(
             throw StatusException(Status.INTERNAL.withDescription(e.message).withCause(e))
         }
     }
-    
+
     /**
      * 商品詳細を取得
      */
-    override suspend fun getProduct(request: CatalogProto.GetProductRequest): CatalogProto.GetProductResponse {
+    override suspend fun getProduct(request: GetProductRequest): GetProductResponse {
         return try {
             logger.info { "gRPC: GetProduct - id=${request.id}, tenantId=${request.tenantId}" }
-            
+
             // バリデーション
             if (request.id.isBlank() || request.tenantId.isBlank()) {
                 throw StatusException(Status.INVALID_ARGUMENT.withDescription("IDとテナントIDは必須です"))
             }
-            
+
             // ユースケース実行
             val product = getProductUseCase.execute(
                 productId = request.id,
                 tenantId = request.tenantId
             ) ?: throw StatusException(Status.NOT_FOUND.withDescription("商品が見つかりません"))
-            
+
             // gRPCレスポンスに変換
-            CatalogProto.GetProductResponse.newBuilder()
+            GetProductResponse.newBuilder()
                 .setProduct(product.toProto())
                 .build()
                 .also {
                     logger.info { "gRPC: GetProduct成功 - name=${product.name}" }
                 }
-            
+
         } catch (e: StatusException) {
             throw e
         } catch (e: Exception) {
@@ -106,17 +109,17 @@ class CatalogGrpcService : CatalogServiceGrpcKt.CatalogServiceCoroutineImplBase(
             throw StatusException(Status.INTERNAL.withDescription(e.message).withCause(e))
         }
     }
-    
+
     /**
      * 商品を作成
      */
-    override suspend fun createProduct(request: CatalogProto.CreateProductRequest): CatalogProto.CreateProductResponse {
+    override suspend fun createProduct(request: CreateProductRequest): CreateProductResponse {
         return try {
             logger.info { "gRPC: CreateProduct - name=${request.name}, tenantId=${request.tenantId}" }
-            
+
             // ユースケース実行
             val product = createProductUseCase.execute(
-                CreateProductRequest(
+                UseCaseCreateProductRequest(
                     tenantId = request.tenantId,
                     name = request.name,
                     description = request.description,
@@ -126,15 +129,15 @@ class CatalogGrpcService : CatalogServiceGrpcKt.CatalogServiceCoroutineImplBase(
                     sku = request.sku
                 )
             )
-            
+
             // gRPCレスポンスに変換
-            CatalogProto.CreateProductResponse.newBuilder()
+            CreateProductResponse.newBuilder()
                 .setProduct(product.toProto())
                 .build()
                 .also {
                     logger.info { "gRPC: CreateProduct成功 - id=${product.id.value}" }
                 }
-            
+
         } catch (e: IllegalArgumentException) {
             logger.warn(e) { "gRPC: CreateProduct バリデーションエラー" }
             throw StatusException(Status.INVALID_ARGUMENT.withDescription(e.message).withCause(e))
@@ -143,17 +146,17 @@ class CatalogGrpcService : CatalogServiceGrpcKt.CatalogServiceCoroutineImplBase(
             throw StatusException(Status.INTERNAL.withDescription(e.message).withCause(e))
         }
     }
-    
+
     /**
      * 商品を更新（簡易実装）
      */
-    override suspend fun updateProduct(request: CatalogProto.UpdateProductRequest): CatalogProto.UpdateProductResponse {
+    override suspend fun updateProduct(request: UpdateProductRequest): UpdateProductResponse {
         return try {
             logger.info { "gRPC: UpdateProduct - id=${request.id}" }
-            
+
             // TODO: UpdateProductUseCaseの実装
             throw StatusException(Status.UNIMPLEMENTED.withDescription("UpdateProductは未実装です"))
-            
+
         } catch (e: StatusException) {
             throw e
         } catch (e: Exception) {
@@ -166,8 +169,8 @@ class CatalogGrpcService : CatalogServiceGrpcKt.CatalogServiceCoroutineImplBase(
 /**
  * ドメインモデルからProtocol Buffersメッセージへの変換
  */
-private fun Product.toProto(): CatalogProto.Product {
-    return CatalogProto.Product.newBuilder()
+private fun Product.toProto(): com.ecommerce.catalog.proto.Product {
+    return com.ecommerce.catalog.proto.Product.newBuilder()
         .setId(id.value)
         .setTenantId(tenantId.value)
         .setName(name)
@@ -176,7 +179,7 @@ private fun Product.toProto(): CatalogProto.Product {
         .setStockQuantity(stockQuantity)
         .setCategoryId(categoryId ?: "")
         .setSku(sku)
-        .setStatus(CatalogProto.ProductStatus.forNumber(status.toProtoStatus()))
+        .setStatus(ProductStatus.forNumber(status.toProtoStatus()))
         .setCreatedAt(createdAt.toEpochMilli())
         .setUpdatedAt(updatedAt.toEpochMilli())
         .build()

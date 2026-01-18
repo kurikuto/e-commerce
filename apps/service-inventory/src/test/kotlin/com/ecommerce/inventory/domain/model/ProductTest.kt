@@ -6,7 +6,7 @@
 
 package com.ecommerce.inventory.domain.model
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -93,11 +93,17 @@ class ProductTest {
 
     @Test
     fun `allocateStock - 在庫を正常に引き当てできる`() {
-        val product = createTestProduct(stockQuantity = 100)
+        val baseTime = Instant.parse("2026-01-18T10:00:00Z")
+        val baseClock = java.time.Clock.fixed(baseTime, java.time.ZoneId.of("UTC"))
+        val product = createTestProduct(stockQuantity = 100).copy(updatedAt = baseTime)
 
-        val updated = product.allocateStock(10)
+        val newTime = Instant.parse("2026-01-18T10:00:01Z")
+        val newClock = java.time.Clock.fixed(newTime, java.time.ZoneId.of("UTC"))
+
+        val updated = product.allocateStock(10, newClock)
 
         assertEquals(90, updated.stockQuantity)
+        assertEquals(newTime, updated.updatedAt)
         assertTrue(updated.updatedAt.isAfter(product.updatedAt))
     }
 
@@ -125,11 +131,17 @@ class ProductTest {
 
     @Test
     fun `replenishStock - 在庫を正常に補充できる`() {
-        val product = createTestProduct(stockQuantity = 50)
+        val baseTime = Instant.parse("2026-01-18T10:00:00Z")
+        val baseClock = java.time.Clock.fixed(baseTime, java.time.ZoneId.of("UTC"))
+        val product = createTestProduct(stockQuantity = 50).copy(updatedAt = baseTime)
 
-        val updated = product.replenishStock(30)
+        val newTime = Instant.parse("2026-01-18T10:00:01Z")
+        val newClock = java.time.Clock.fixed(newTime, java.time.ZoneId.of("UTC"))
+
+        val updated = product.replenishStock(30, newClock)
 
         assertEquals(80, updated.stockQuantity)
+        assertEquals(newTime, updated.updatedAt)
         assertTrue(updated.updatedAt.isAfter(product.updatedAt))
     }
 

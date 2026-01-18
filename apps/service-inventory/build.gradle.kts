@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "2.0.21"
-    kotlin("plugin.serialization") version "2.0.21"
+    kotlin("jvm") version "2.1.0"
+    kotlin("plugin.serialization") version "2.1.0"
     application
     id("com.google.protobuf") version "0.9.4"
 }
@@ -51,10 +51,16 @@ dependencies {
     implementation("com.typesafe:config:1.4.3")
 
     // Testing
-    testImplementation("io.ktor:ktor-server-tests:3.3.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.0.21")
+    testImplementation("io.ktor:ktor-server-test-host:3.3.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:2.1.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
     testImplementation("io.mockk:mockk:1.13.9")
     testImplementation("com.h2database:h2:2.2.224") // H2 in-memory database for testing
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 application {
@@ -82,6 +88,14 @@ protobuf {
             it.builtins {
                 create("kotlin")
             }
+        }
+    }
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDir("../../packages/grpc-schema/proto")
         }
     }
 }

@@ -353,24 +353,106 @@ function CreateProductForm() {
 
 ## テスト
 
+### テスト実行
+
+#### フロントエンドテスト（全パッケージ）
+
+```bash
+# すべてのテストを実行
+pnpm test
+
+# 特定のパッケージのみ
+pnpm --filter @ecommerce/shared-utils test
+pnpm --filter @ecommerce/ui-core test
+pnpm --filter @ecommerce/admin-panel test
+
+# ウォッチモード
+pnpm test:watch
+
+# カバレッジ計測
+pnpm test:coverage
+```
+
+#### バックエンドテスト（Kotlin）
+
+```bash
+cd apps/service-inventory
+
+# すべてのテストを実行
+./gradlew test
+
+# 特定のテストクラスのみ
+./gradlew test --tests "com.ecommerce.inventory.domain.model.ProductTest"
+
+# ビルド＋テスト
+./gradlew build
+```
+
+### テスト構成
+
+#### フロントエンド（TypeScript）
+
+**総テスト数**: 139テスト
+
+| パッケージ       | テスト数 | 内容                                            |
+| ---------------- | -------- | ----------------------------------------------- |
+| shared-utils     | 96       | エラー、UUID、バリデーション、日時、フォーマット |
+| ui-core          | 35       | カスタムフック（5種類）                          |
+| admin-panel      | 8        | 商品サービスAPI                                  |
+
+**テストフレームワーク**:
+- Vitest 4.0.17
+- @testing-library/react 16.3.1
+- happy-dom（DOM環境）
+
+#### バックエンド（Kotlin）
+
+**総テスト数**: 45テスト
+
+| テストクラス                  | テスト数 | 内容                             |
+| ----------------------------- | -------- | -------------------------------- |
+| ProductTest                   | 16       | ドメインモデル、ビジネスロジック  |
+| ProductRepositoryImplTest     | 11       | データベースアクセス層（H2）      |
+| GetProductUseCaseTest         | 2        | 商品取得ユースケース              |
+| ListProductsUseCaseTest       | 5        | 商品一覧取得ユースケース          |
+| CreateProductUseCaseTest      | 2        | 商品作成ユースケース              |
+| ProductId/TenantId/PriceTest  | 9        | 値オブジェクト                    |
+
+**テストフレームワーク**:
+- JUnit Jupiter 5.10.1
+- MockK 1.13.9
+- kotlinx-coroutines-test 1.8.1
+- H2 Database 2.2.224（テスト用）
+
 ### ユニットテスト（Kotlin）
 
+#### ドメインモデルのテスト
+
 ```kotlin
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+
 class ProductTest {
     @Test
     fun `在庫引き当てが正しく動作する`() {
         // Given
+        val baseTime = Instant.parse("2026-01-18T10:00:00Z")
+        val baseClock = Clock.fixed(baseTime, ZoneId.of("UTC"))
         val product = Product(
             id = ProductId.generate(),
             stockQuantity = 10,
-            status = ProductStatus.ACTIVE
+            status = ProductStatus.ACTIVE,
+            updatedAt = baseTime
         )
 
         // When
-        val result = product.allocateStock(5)
+        val newTime = Instant.parse("2026-01-18T10:00:01Z")
+        val newClock = Clock.fixed(newTime, ZoneId.of("UTC"))
+        val result = product.allocateStock(5, newClock)
 
         // Then
         assertEquals(5, result.stockQuantity)
+        assertEquals(newTime, result.updatedAt)
     }
 
     @Test
@@ -384,26 +466,250 @@ class ProductTest {
 }
 ```
 
-### コンポーネントテスト（React）
+**Clock注入パターン**: 時刻依存のテストを決定的にするため、`Clock`パラメータを使用しています。
+
+#### ユースケースのテスト（MockK使用）
+
+```kotlin
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Test
+
+class GetProductUseCaseTest {
+    private val productRepository = mockk<ProductRepository>()
+    private val useCase = GetProductUseCase(productRepository)
+
+    @Test
+    fun `商品が存在する場合は正常に取得できる`() = runTest {
+        // Given
+        val product = createTestProduct()
+        coEvery {
+            productRepository.findById(any(), any())
+        } returns product
+
+        // When
+        val result = useCase.execute(
+            productId = "550e8400-e29b-41d4-a716-446655440000",
+            tenantId = "test-tenant"
+        )
+
+        // Then
+        assertEquals(product, result)
+        coVerify {
+            productRepository.findById(
+                ProductId.from("550e8400-e29b-41d4-a716-446655440000"),
+                TenantId("test-tenant")
+            )
+        }
+    }
+}
+```
+
+**ポイント**:
+- `runTest`: コルーチンテスト用のスコープ
+- `coEvery`: suspend関数のモック
+- `coVerify`: suspend関数の呼び出し検証
+
+#### インテグレーションテスト（H2使用）
+
+```kotlin
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.AfterEach
+import kotlinx.coroutines.test.runTest
+
+class ProductRepositoryImplTest {
+    private lateinit var database: Database
+    private lateinit var repository: ProductRepository
+
+    @BeforeEach
+    fun setup() {
+        database = Database.connect(
+            url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;",
+            driver = "org.h2.Driver"
+        )
+        transaction(database) {
+            SchemaUtils.create(ProductTable)
+        }
+        repository = ProductRepositoryImpl()
+    }
+
+    @AfterEach
+    fun teardown() {
+        transaction(database) {
+            SchemaUtils.drop(ProductTable)
+        }
+    }
+
+    @Test
+    fun `新しい商品を正常に保存できる`() = runTest {
+        // Given
+        val product = createTestProduct()
+
+        // When
+        val saved = repository.save(product)
+
+        // Then
+        assertNotNull(saved)
+        assertEquals(product.id, saved.id)
+    }
+}
+```
+
+### フロントエンドテスト
+
+#### ユーティリティ関数のテスト（Vitest）
 
 ```typescript
-import { render, screen } from '@testing-library/react';
-import { ProductCard } from './ProductCard';
+import { describe, it, expect } from 'vitest';
+import { isValidEmail, isValidUrl } from './validation';
 
-describe('ProductCard', () => {
-  it('商品名が表示される', () => {
-    const product = {
-      id: '1',
-      name: 'テスト商品',
-      price: 1000,
-    };
+describe('validation', () => {
+  describe('isValidEmail', () => {
+    it('有効なメールアドレスを検証できる', () => {
+      expect(isValidEmail('test@example.com')).toBe(true);
+      expect(isValidEmail('user+tag@domain.co.jp')).toBe(true);
+    });
 
-    render(<ProductCard product={product} />);
-
-    expect(screen.getByText('テスト商品')).toBeInTheDocument();
+    it('無効なメールアドレスを拒否する', () => {
+      expect(isValidEmail('invalid')).toBe(false);
+      expect(isValidEmail('@example.com')).toBe(false);
+    });
   });
 });
 ```
+
+#### カスタムフックのテスト
+
+```typescript
+import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { useDebounce } from './useDebounce';
+
+describe('useDebounce', () => {
+  it('指定時間後に値が更新される', async () => {
+    vi.useFakeTimers();
+
+    const { result } = renderHook(() => useDebounce('initial', 500));
+
+    expect(result.current).toBe('initial');
+
+    // 500ms経過
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    expect(result.current).toBe('initial');
+
+    vi.useRealTimers();
+  });
+});
+```
+
+#### APIサービスのテスト
+
+```typescript
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { fetchProducts } from './productService';
+
+describe('productService', () => {
+  beforeEach(() => {
+    // モックのリセット
+    vi.clearAllMocks();
+  });
+
+  it('商品一覧を取得できる', async () => {
+    const result = await fetchProducts({ page: 1, pageSize: 20 });
+
+    expect(result.items).toHaveLength(2);
+    expect(result.totalCount).toBe(2);
+  });
+});
+```
+
+### テストのベストプラクティス
+
+#### 1. Given-When-Then パターン
+
+テストを明確に構造化します：
+
+```kotlin
+@Test
+fun `テストケース名`() {
+    // Given: テストの前提条件
+    val product = createTestProduct()
+
+    // When: テスト対象の実行
+    val result = product.allocateStock(5)
+
+    // Then: 結果の検証
+    assertEquals(5, result.stockQuantity)
+}
+```
+
+#### 2. Clock注入パターン
+
+時刻依存のテストを決定的にします：
+
+```kotlin
+// 本番コード
+fun allocateStock(quantity: Int, clock: Clock = Clock.systemUTC()): Product {
+    return copy(updatedAt = Instant.now(clock))
+}
+
+// テストコード
+@Test
+fun `updatedAtが更新される`() {
+    val fixedClock = Clock.fixed(Instant.parse("2026-01-18T10:00:00Z"), ZoneId.of("UTC"))
+    val result = product.allocateStock(5, fixedClock)
+    assertEquals(Instant.parse("2026-01-18T10:00:00Z"), result.updatedAt)
+}
+```
+
+#### 3. モックの適切な使用
+
+依存関係をモック化してユニットテストを隔離します：
+
+```kotlin
+// ✅ 良い例：リポジトリをモック化
+private val productRepository = mockk<ProductRepository>()
+
+// ❌ 悪い例：実際のデータベースを使用（ユニットテストではない）
+private val productRepository = ProductRepositoryImpl()
+```
+
+#### 4. テストの独立性
+
+各テストは独立して実行できるようにします：
+
+```kotlin
+@BeforeEach
+fun setup() {
+    // 各テスト前に初期化
+    database = Database.connect(...)
+}
+
+@AfterEach
+fun teardown() {
+    // 各テスト後にクリーンアップ
+    transaction { SchemaUtils.drop(ProductTable) }
+}
+```
+
+### テストカバレッジ
+
+```bash
+# フロントエンド
+pnpm test:coverage
+
+# バックエンド
+./gradlew test jacocoTestReport
+```
+
+カバレッジレポートは以下に出力されます：
+- フロントエンド: `coverage/index.html`
+- バックエンド: `build/reports/jacoco/test/html/index.html`
 
 ---
 

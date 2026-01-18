@@ -9,13 +9,13 @@ package com.ecommerce.inventory.infrastructure.database
 
 import com.ecommerce.inventory.domain.model.*
 import com.ecommerce.inventory.domain.repository.ProductRepository
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -27,7 +27,7 @@ class ProductRepositoryImplTest {
     private lateinit var database: Database
     private lateinit var repository: ProductRepository
 
-    @Before
+    @BeforeEach
     fun setup() {
         // H2インメモリデータベースを設定
         database = Database.connect(
@@ -43,7 +43,7 @@ class ProductRepositoryImplTest {
         repository = ProductRepositoryImpl()
     }
 
-    @After
+    @AfterEach
     fun teardown() {
         transaction(database) {
             SchemaUtils.drop(ProductTable)
@@ -71,7 +71,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun `save - 新しい商品を正常に保存できる`() = runBlocking {
+    fun `save - 新しい商品を正常に保存できる`() = runTest {
         val product = createTestProduct()
 
         val saved = repository.save(product)
@@ -83,7 +83,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun `save - 既存の商品を更新できる`() = runBlocking {
+    fun `save - 既存の商品を更新できる`() = runTest {
         val product = createTestProduct()
         repository.save(product)
 
@@ -98,7 +98,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun `findById - IDとテナントIDで商品を取得できる`() = runBlocking {
+    fun `findById - IDとテナントIDで商品を取得できる`() = runTest {
         val product = createTestProduct()
         repository.save(product)
 
@@ -113,7 +113,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun `findById - 存在しない商品の場合はnullを返す`() = runBlocking {
+    fun `findById - 存在しない商品の場合はnullを返す`() = runTest {
         val found = repository.findById(
             ProductId.from("non-existent-id"),
             TenantId("test-tenant")
@@ -123,7 +123,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun `findById - 異なるテナントの商品は取得できない`() = runBlocking {
+    fun `findById - 異なるテナントの商品は取得できない`() = runTest {
         val product = createTestProduct(tenantId = "tenant-a")
         repository.save(product)
 
@@ -136,7 +136,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun `findBySku - SKUとテナントIDで商品を取得できる`() = runBlocking {
+    fun `findBySku - SKUとテナントIDで商品を取得できる`() = runTest {
         val product = createTestProduct(sku = "UNIQUE-SKU-001")
         repository.save(product)
 
@@ -150,7 +150,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun `findBySku - 存在しないSKUの場合はnullを返す`() = runBlocking {
+    fun `findBySku - 存在しないSKUの場合はnullを返す`() = runTest {
         val found = repository.findBySku(
             sku = "NON-EXISTENT-SKU",
             tenantId = TenantId("test-tenant")
@@ -160,7 +160,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun `findAll - テナントの全商品を取得できる`() = runBlocking {
+    fun `findAll - テナントの全商品を取得できる`() = runTest {
         // 3つの商品を保存
         repository.save(createTestProduct(
             id = "550e8400-e29b-41d4-a716-446655440001",
@@ -183,11 +183,11 @@ class ProductRepositoryImplTest {
 
         assertEquals(3, result.items.size)
         assertEquals(3, result.totalCount)
-        assertEquals(1, result.page)
+        assertEquals(1, result.currentPage)
     }
 
     @Test
-    fun `findAll - ページネーションが正常に動作する`() = runBlocking {
+    fun `findAll - ページネーションが正常に動作する`() = runTest {
         // 5つの商品を保存
         for (i in 1..5) {
             repository.save(createTestProduct(
@@ -225,7 +225,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun `findAll - 異なるテナントの商品は含まれない`() = runBlocking {
+    fun `findAll - 異なるテナントの商品は含まれない`() = runTest {
         repository.save(createTestProduct(
             id = "550e8400-e29b-41d4-a716-446655440001",
             tenantId = "tenant-a",
@@ -248,7 +248,7 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    fun `findAll - 商品が存在しない場合は空のリストを返す`() = runBlocking {
+    fun `findAll - 商品が存在しない場合は空のリストを返す`() = runTest {
         val result = repository.findAll(
             tenantId = TenantId("empty-tenant"),
             page = 1,

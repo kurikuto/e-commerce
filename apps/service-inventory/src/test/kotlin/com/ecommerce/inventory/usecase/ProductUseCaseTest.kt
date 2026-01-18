@@ -12,8 +12,8 @@ import com.ecommerce.inventory.domain.repository.ProductRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
-import org.junit.Test
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Test
 import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -41,7 +41,7 @@ class GetProductUseCaseTest {
     }
 
     @Test
-    fun `execute - 商品が存在する場合は正常に取得できる`() = runBlocking {
+    fun `execute - 商品が存在する場合は正常に取得できる`() = runTest {
         val product = createTestProduct()
         coEvery {
             productRepository.findById(any(), any())
@@ -62,7 +62,7 @@ class GetProductUseCaseTest {
     }
 
     @Test
-    fun `execute - 商品が存在しない場合はnullを返す`() = runBlocking {
+    fun `execute - 商品が存在しない場合はnullを返す`() = runTest {
         coEvery {
             productRepository.findById(any(), any())
         } returns null
@@ -98,7 +98,7 @@ class ListProductsUseCaseTest {
     }
 
     @Test
-    fun `execute - 商品一覧を正常に取得できる`() = runBlocking {
+    fun `execute - 商品一覧を正常に取得できる`() = runTest {
         val products = listOf(
             createTestProduct("550e8400-e29b-41d4-a716-446655440001", "商品1"),
             createTestProduct("550e8400-e29b-41d4-a716-446655440002", "商品2")
@@ -106,7 +106,7 @@ class ListProductsUseCaseTest {
         val paginatedResult = PaginatedResult(
             items = products,
             totalCount = 2,
-            page = 1,
+            currentPage = 1,
             pageSize = 20
         )
 
@@ -122,11 +122,11 @@ class ListProductsUseCaseTest {
 
         assertEquals(2, result.items.size)
         assertEquals(2, result.totalCount)
-        assertEquals(1, result.page)
+        assertEquals(1, result.currentPage)
     }
 
     @Test
-    fun `execute - ページ番号が0以下の場合は例外が発生する`() = runBlocking {
+    fun `execute - ページ番号が0以下の場合は例外が発生する`() = runTest {
         assertFailsWith<IllegalArgumentException> {
             useCase.execute(
                 tenantId = "test-tenant",
@@ -137,7 +137,7 @@ class ListProductsUseCaseTest {
     }
 
     @Test
-    fun `execute - ページサイズが1未満の場合は例外が発生する`() = runBlocking {
+    fun `execute - ページサイズが1未満の場合は例外が発生する`() = runTest {
         assertFailsWith<IllegalArgumentException> {
             useCase.execute(
                 tenantId = "test-tenant",
@@ -148,7 +148,7 @@ class ListProductsUseCaseTest {
     }
 
     @Test
-    fun `execute - ページサイズが100を超える場合は例外が発生する`() = runBlocking {
+    fun `execute - ページサイズが100を超える場合は例外が発生する`() = runTest {
         assertFailsWith<IllegalArgumentException> {
             useCase.execute(
                 tenantId = "test-tenant",
@@ -159,11 +159,11 @@ class ListProductsUseCaseTest {
     }
 
     @Test
-    fun `execute - 空のリストを正常に取得できる`() = runBlocking {
+    fun `execute - 空のリストを正常に取得できる`() = runTest {
         val paginatedResult = PaginatedResult<Product>(
             items = emptyList(),
             totalCount = 0,
-            page = 1,
+            currentPage = 1,
             pageSize = 20
         )
 
@@ -188,7 +188,7 @@ class CreateProductUseCaseTest {
     private val useCase = CreateProductUseCase(productRepository)
 
     @Test
-    fun `execute - 新しい商品を正常に作成できる`() = runBlocking {
+    fun `execute - 新しい商品を正常に作成できる`() = runTest {
         val productId = ProductId.generate()
         val product = Product(
             id = productId,
@@ -225,7 +225,7 @@ class CreateProductUseCaseTest {
     }
 
     @Test
-    fun `execute - SKUが重複している場合は例外が発生する`() = runBlocking {
+    fun `execute - SKUが重複している場合は例外が発生する`() = runTest {
         val existingProduct = Product(
             id = ProductId.generate(),
             tenantId = TenantId("test-tenant"),
