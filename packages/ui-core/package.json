@@ -20,7 +20,10 @@
     "lint:fix": "eslint src/ --fix",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "test": "echo \"No tests yet\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -36,11 +39,18 @@
     "@storybook/addon-a11y": "^10.1.11",
     "@storybook/addon-onboarding": "^10.0.0",
     "@storybook/react-vite": "^10.1.11",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@vitest/ui": "^4.0.17",
     "eslint": "^9.16.0",
+    "happy-dom": "^20.3.1",
+    "jsdom": "^27.4.0",
     "storybook": "^10.1.11",
     "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^4.0.17"
   }
 }
