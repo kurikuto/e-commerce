@@ -473,10 +473,234 @@ SELECT * FROM products WHERE tenant_id = 'demo-tenant';
 
 ---
 
+---
+
+## Storybook
+
+### 概要
+
+Storybook 10を使用して、UIコンポーネントの開発・テスト・ドキュメント化を行います。
+
+**対象パッケージ**: `packages/ui-core`
+
+### 起動方法
+
+```bash
+# ui-coreパッケージでStorybookを起動
+cd packages/ui-core
+pnpm storybook
+
+# またはルートから
+pnpm --filter @ecommerce/ui-core storybook
+```
+
+ブラウザで http://localhost:6006 を開くと、Storybookが表示されます。
+
+### ビルド
+
+```bash
+# Storybookを静的ファイルとしてビルド
+pnpm --filter @ecommerce/ui-core build-storybook
+
+# 出力先: packages/ui-core/storybook-static/
+```
+
+### 主な機能
+
+#### 1. コンポーネントカタログ
+
+すべてのUIコンポーネントを独立した環境で確認できます：
+
+- **Components**
+  - DataTable - データテーブル
+  - ErrorBoundary - エラーハンドリング
+  - LoadingSpinner - ローディング表示
+  - PageHeader - ページヘッダー
+
+- **Hooks**
+  - Custom Hooks - カスタムフック集
+
+#### 2. テーマ切り替え
+
+ツールバーから簡単にLight/Darkテーマを切り替えられます：
+
+- 🌞 Light Theme (Fluent UI webLightTheme)
+- 🌙 Dark Theme (Fluent UI webDarkTheme)
+
+#### 3. レスポンシブテスト
+
+ビューポートアドオンで異なる画面サイズをテスト：
+
+- Mobile (375px)
+- Tablet (768px)
+- Desktop (1920px)
+
+#### 4. アクセシビリティチェック
+
+a11yアドオンで自動的にアクセシビリティの問題を検出します。
+
+### 新しいStoryの作成
+
+#### コンポーネントのStory
+
+```tsx
+// src/components/MyComponent.stories.tsx
+import type { Meta, StoryObj } from '@storybook/react';
+import { MyComponent } from './MyComponent';
+
+/**
+ * MyComponentの説明
+ */
+const meta = {
+  title: 'Components/MyComponent',
+  component: MyComponent,
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'], // 自動ドキュメント生成
+  argTypes: {
+    // プロパティの説明とコントロール設定
+    label: {
+      control: 'text',
+      description: 'ボタンのラベル',
+    },
+  },
+} satisfies Meta<typeof MyComponent>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+/**
+ * デフォルトの表示
+ */
+export const Default: Story = {
+  args: {
+    label: 'クリック',
+  },
+};
+
+/**
+ * プライマリーボタン
+ */
+export const Primary: Story = {
+  args: {
+    label: '送信',
+    appearance: 'primary',
+  },
+};
+```
+
+#### カスタムフックのStory
+
+フックはデモコンポーネントを作成して表示します：
+
+```tsx
+// src/hooks/useMyHook.stories.tsx
+import type { Meta, StoryObj } from '@storybook/react';
+import { useMyHook } from './useMyHook';
+
+const DemoComponent = () => {
+  const value = useMyHook();
+  return <div>Value: {value}</div>;
+};
+
+const meta = {
+  title: 'Hooks/useMyHook',
+  parameters: { layout: 'centered' },
+} satisfies Meta;
+
+export default meta;
+
+export const Demo: StoryObj = {
+  render: () => <DemoComponent />,
+};
+```
+
+### ベストプラクティス
+
+#### 1. 包括的なバリエーション
+
+コンポーネントのすべての状態と使用パターンをカバーします：
+
+```tsx
+export const Default: Story = { ... };
+export const Loading: Story = { ... };
+export const Error: Story = { ... };
+export const Empty: Story = { ... };
+```
+
+#### 2. 適切な説明
+
+各Storyにわかりやすい説明を付けます：
+
+```tsx
+/**
+ * 長いテキストの場合
+ *
+ * テキストが長い場合、自動的に省略されて表示されます。
+ */
+export const LongText: Story = {
+  args: { ... },
+  parameters: {
+    docs: {
+      description: {
+        story: '追加の詳細な説明をここに記載できます。',
+      },
+    },
+  },
+};
+```
+
+#### 3. インタラクションテスト
+
+ユーザーインタラクションをテストできます：
+
+```tsx
+import { userEvent, within } from '@storybook/test';
+
+export const ClickInteraction: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button'));
+  },
+};
+```
+
+### トラブルシューティング
+
+#### Storybookが起動しない
+
+```bash
+# node_modulesを再インストール
+cd packages/ui-core
+rm -rf node_modules
+pnpm install
+
+# Storybookを再起動
+pnpm storybook
+```
+
+#### 型エラーが出る
+
+```bash
+# 型チェックを実行
+pnpm type-check
+
+# TypeScriptの設定を確認
+cat tsconfig.json
+```
+
+#### ホットリロードが動作しない
+
+Viteの設定やファイルウォッチャーの制限を確認してください。
+
+---
+
 ## さらなる学習
 
 - [Clean Architecture詳細](./ARCHITECTURE.md)
 - [Protocol Buffers ガイド](../packages/grpc-schema/README.md)
 - [Fluent UI コンポーネント](https://react.fluentui.dev/)
+- [Storybook 公式ドキュメント](https://storybook.js.org/docs)
 
 開発中に困ったことがあれば、このドキュメントを更新してください！

@@ -1,0 +1,26 @@
+# ビルド出力
+dist/
+storybook-static/
+
+# 依存関係
+node_modules/
+
+# ログ
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# 環境変数
+.env.local
+.env.*.local
+
+# エディタ設定
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
