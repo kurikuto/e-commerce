@@ -8,7 +8,7 @@ on:
 
 env:
   NODE_VERSION: '20.11'
-  PNPM_VERSION: '9.15.0'
+  PNPM_VERSION: '10.28.1'
 
 jobs:
   lint-and-typecheck:
@@ -158,6 +158,9 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
+
+      - name: Make gradlew executable
+        run: chmod +x apps/service-inventory/gradlew
 
       - name: Build with Gradle
         working-directory: apps/service-inventory
