@@ -70,7 +70,7 @@ describe('productService', () => {
 
       expect(response1.products.length).toBeGreaterThan(0);
       expect(response2.products.length).toBeGreaterThan(0);
-      expect(response1.products[0].id).not.toBe(response2.products[0].id);
+      expect(response1.products[0]?.id).not.toBe(response2.products[0]?.id);
     });
 
     it('should calculate total pages correctly', async () => {

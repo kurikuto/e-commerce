@@ -6,7 +6,7 @@
  * ここでは簡易的にREST APIを想定したモックデータを返します。
  */
 
-import { Product, ListProductsResponse, ListProductsRequest } from '@types/product';
+import { ListProductsRequest, ListProductsResponse, Product } from '@/types/product';
 
 /**
  * モックデータ

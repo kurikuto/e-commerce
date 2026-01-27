@@ -4,13 +4,13 @@
  * 商品の一覧表示と基本的なCRUD操作を提供します。
  */
 
-import { formatDateTime, formatPrice } from '@ecommerce/shared-utils';
+import { Product } from '@/types/product';
+import { formatDateTime, formatPrice, toTimestamp } from '@ecommerce/shared-utils';
 import { DataTable, DataTableColumn, PageHeader } from '@ecommerce/ui-core';
 import { Badge, Button, SearchBox, Spinner, makeStyles, tokens } from '@fluentui/react-components';
 import { Add24Regular } from '@fluentui/react-icons';
 import { fetchProducts } from '@services/productService';
 import { useQuery } from '@tanstack/react-query';
-import { Product } from '@types/product';
 import { useState } from 'react';
 
 const useStyles = makeStyles({
@@ -65,12 +65,13 @@ export default function ProductListPage() {
     isError,
     error,
   } = useQuery({
-    queryKey: ['products', page],
+    queryKey: ['products', page, searchQuery],
     queryFn: () =>
       fetchProducts({
         tenantId: 'demo-tenant', // TODO: 認証から取得
         page,
         pageSize: 20,
+        nameFilter: searchQuery || undefined,
       }),
   });
 
@@ -109,7 +110,7 @@ export default function ProductListPage() {
       key: 'updatedAt',
       label: '更新日時',
       width: 180,
-      render: (product) => formatDateTime(Number(product.updatedAt)),
+      render: (product) => formatDateTime(toTimestamp(new Date(Number(product.updatedAt)))),
     },
   ];
 

@@ -85,6 +85,7 @@ test-results/
 *.pid
 *.seed
 *.pid.lock
+.work/
 
 # ==========================================
 # Generated files (Protocol Buffers)

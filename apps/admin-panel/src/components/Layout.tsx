@@ -1,24 +1,13 @@
 /**
  * レイアウトコンポーネント
- * 
+ *
  * アプリケーション全体のレイアウトを定義します。
  * ナビゲーションバーとコンテンツエリアを含みます。
  */
 
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import {
-  makeStyles,
-  tokens,
-  Tab,
-  TabList,
-  Title2,
-  Badge,
-} from '@fluentui/react-components';
-import {
-  Box24Regular,
-  ShoppingBag24Regular,
-  People24Regular,
-} from '@fluentui/react-icons';
+import { Badge, makeStyles, Tab, TabList, Title2, tokens } from '@fluentui/react-components';
+import { Box24Regular, People24Regular, ShoppingBag24Regular } from '@fluentui/react-icons';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles({
   root: {
@@ -50,7 +39,7 @@ const useStyles = makeStyles({
 
 /**
  * Layoutコンポーネント
- * 
+ *
  * 管理画面の共通レイアウトを提供します。
  */
 export default function Layout() {
