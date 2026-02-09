@@ -56,7 +56,7 @@ function ProductStatusBadge({ status }: { status: Product['status'] }) {
 export default function ProductListPage() {
   const styles = useStyles();
   const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(1);
+  const [page, _setPage] = useState(1); // TODO: ページネーション実装時に使用
 
   // React Queryでデータ取得
   const {
