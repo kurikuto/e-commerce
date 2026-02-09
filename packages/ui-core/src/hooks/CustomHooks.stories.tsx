@@ -40,9 +40,18 @@ const UseDebounceDemoComponent = () => {
 
       <Card>
         <div style={{ padding: '16px' }}>
-          <p><strong>入力値:</strong> {searchTerm || '（なし）'}</p>
-          <p><strong>デバウンス後の値:</strong> {debouncedSearchTerm || '（なし）'}</p>
-          <p><strong>検索API呼び出し回数:</strong> <Badge appearance="filled" color="brand">{callCount}回</Badge></p>
+          <p>
+            <strong>入力値:</strong> {searchTerm || '（なし）'}
+          </p>
+          <p>
+            <strong>デバウンス後の値:</strong> {debouncedSearchTerm || '（なし）'}
+          </p>
+          <p>
+            <strong>検索API呼び出し回数:</strong>{' '}
+            <Badge appearance="filled" color="brand">
+              {callCount}回
+            </Badge>
+          </p>
           <p style={{ fontSize: '14px', color: '#666', marginTop: '12px' }}>
             💡 入力を停止して500ms後にデバウンスされた値が更新されます。
             これにより、API呼び出しの回数を削減できます。
@@ -74,7 +83,8 @@ const UseToggleDemoComponent = () => {
             <Button onClick={() => setMenuOpen(false)}>閉じる</Button>
           </div>
           <p style={{ marginTop: '12px' }}>
-            状態: <Badge appearance="filled" color={isMenuOpen ? 'success' : 'danger'}>
+            状態:{' '}
+            <Badge appearance="filled" color={isMenuOpen ? 'success' : 'danger'}>
               {isMenuOpen ? 'メニュー開' : 'メニュー閉'}
             </Badge>
           </p>
@@ -88,7 +98,8 @@ const UseToggleDemoComponent = () => {
             {isDarkMode ? '☀️ ライトモード' : '🌙 ダークモード'}
           </Button>
           <p style={{ marginTop: '12px' }}>
-            現在のテーマ: <Badge appearance="filled" color={isDarkMode ? 'important' : 'brand'}>
+            現在のテーマ:{' '}
+            <Badge appearance="filled" color={isDarkMode ? 'important' : 'brand'}>
               {isDarkMode ? 'Dark' : 'Light'}
             </Badge>
           </p>
@@ -102,7 +113,8 @@ const UseToggleDemoComponent = () => {
             {isLoading ? '読み込み中...' : 'データを取得'}
           </Button>
           <p style={{ marginTop: '12px' }}>
-            状態: <Badge appearance="filled" color={isLoading ? 'warning' : 'success'}>
+            状態:{' '}
+            <Badge appearance="filled" color={isLoading ? 'warning' : 'success'}>
               {isLoading ? 'Loading...' : 'Ready'}
             </Badge>
           </p>
@@ -141,9 +153,13 @@ const UseLocalStorageDemoComponent = () => {
           <h3>カウンター</h3>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <Button onClick={() => setCount(count - 1)}>-</Button>
-            <Badge appearance="filled" color="brand" size="extra-large">{count}</Badge>
+            <Badge appearance="filled" color="brand" size="extra-large">
+              {count}
+            </Badge>
             <Button onClick={() => setCount(count + 1)}>+</Button>
-            <Button appearance="secondary" onClick={() => setCount(0)}>リセット</Button>
+            <Button appearance="secondary" onClick={() => setCount(0)}>
+              リセット
+            </Button>
           </div>
           <p style={{ fontSize: '14px', color: '#666', marginTop: '12px' }}>
             💡 カウント値もlocalStorageに保存されます。
@@ -168,14 +184,29 @@ const UsePreviousDemoComponent = () => {
           <h3>カウンター（前回値の追跡）</h3>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px' }}>
             <Button onClick={() => setCount(count - 1)}>-</Button>
-            <Badge appearance="filled" color="brand" size="extra-large">{count}</Badge>
+            <Badge appearance="filled" color="brand" size="extra-large">
+              {count}
+            </Badge>
             <Button onClick={() => setCount(count + 1)}>+</Button>
           </div>
 
-          <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-            <p><strong>現在の値:</strong> {count}</p>
-            <p><strong>前回の値:</strong> {previousCount ?? '（なし）'}</p>
-            <p><strong>変化量:</strong> {previousCount !== undefined ? count - previousCount : 0}</p>
+          <div
+            style={{
+              marginTop: '16px',
+              padding: '12px',
+              backgroundColor: '#f5f5f5',
+              borderRadius: '4px',
+            }}
+          >
+            <p>
+              <strong>現在の値:</strong> {count}
+            </p>
+            <p>
+              <strong>前回の値:</strong> {previousCount ?? '（なし）'}
+            </p>
+            <p>
+              <strong>変化量:</strong> {previousCount !== undefined ? count - previousCount : 0}
+            </p>
           </div>
 
           <p style={{ fontSize: '14px', color: '#666', marginTop: '12px' }}>
@@ -230,7 +261,8 @@ export const UseDebounce: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'useDebounceフックは、ユーザーの入力が停止してから指定時間後に値を更新します。これにより、API呼び出しやコストの高い処理の回数を大幅に削減できます。',
+        story:
+          'useDebounceフックは、ユーザーの入力が停止してから指定時間後に値を更新します。これにより、API呼び出しやコストの高い処理の回数を大幅に削減できます。',
       },
     },
   },
@@ -247,7 +279,8 @@ export const UseToggle: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'useToggleフックは、boolean状態の管理を簡素化します。トグル関数と直接設定する関数の両方を提供します。',
+        story:
+          'useToggleフックは、boolean状態の管理を簡素化します。トグル関数と直接設定する関数の両方を提供します。',
       },
     },
   },
@@ -264,7 +297,8 @@ export const UseLocalStorage: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'useLocalStorageフックは、ReactのstateとブラウザのlocalStorageを自動的に同期します。ページをリロードしても値が保持されます。',
+        story:
+          'useLocalStorageフックは、ReactのstateとブラウザのlocalStorageを自動的に同期します。ページをリロードしても値が保持されます。',
       },
     },
   },
@@ -281,7 +315,8 @@ export const UsePrevious: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'usePreviousフックは、前回のレンダリング時の値を追跡します。現在の値と比較することで、変化量を計算したり、特定の変化に反応したりできます。',
+        story:
+          'usePreviousフックは、前回のレンダリング時の値を追跡します。現在の値と比較することで、変化量を計算したり、特定の変化に反応したりできます。',
       },
     },
   },

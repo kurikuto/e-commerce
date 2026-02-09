@@ -1,17 +1,21 @@
 import { describe, expect, it } from 'vitest';
 import {
-    priceSchema,
-    productNameSchema,
-    stockQuantitySchema,
-    tenantIdSchema,
-    uuidSchema,
-    validate,
+  priceSchema,
+  productNameSchema,
+  stockQuantitySchema,
+  tenantIdSchema,
+  uuidSchema,
+  validate,
 } from './validation';
 
 describe('uuidSchema', () => {
   it('should accept valid UUIDs', () => {
-    expect(uuidSchema.parse('550e8400-e29b-41d4-a716-446655440000')).toBe('550e8400-e29b-41d4-a716-446655440000');
-    expect(uuidSchema.parse('6ba7b810-9dad-11d1-80b4-00c04fd430c8')).toBe('6ba7b810-9dad-11d1-80b4-00c04fd430c8');
+    expect(uuidSchema.parse('550e8400-e29b-41d4-a716-446655440000')).toBe(
+      '550e8400-e29b-41d4-a716-446655440000'
+    );
+    expect(uuidSchema.parse('6ba7b810-9dad-11d1-80b4-00c04fd430c8')).toBe(
+      '6ba7b810-9dad-11d1-80b4-00c04fd430c8'
+    );
   });
 
   it('should reject invalid UUIDs', () => {
@@ -33,7 +37,9 @@ describe('tenantIdSchema', () => {
   });
 
   it('should reject tenant IDs that are too long', () => {
-    expect(() => tenantIdSchema.parse('a'.repeat(51))).toThrow('Tenant ID must be at most 50 characters');
+    expect(() => tenantIdSchema.parse('a'.repeat(51))).toThrow(
+      'Tenant ID must be at most 50 characters'
+    );
   });
 
   it('should reject tenant IDs with invalid characters', () => {
@@ -54,7 +60,9 @@ describe('productNameSchema', () => {
   });
 
   it('should reject product names that are too long', () => {
-    expect(() => productNameSchema.parse('a'.repeat(201))).toThrow('Product name must be at most 200 characters');
+    expect(() => productNameSchema.parse('a'.repeat(201))).toThrow(
+      'Product name must be at most 200 characters'
+    );
   });
 });
 

@@ -9,10 +9,9 @@ describe('usePrevious', () => {
   });
 
   it('should return previous value after update', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => usePrevious(value),
-      { initialProps: { value: 'first' } }
-    );
+    const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
+      initialProps: { value: 'first' },
+    });
 
     expect(result.current).toBeUndefined();
 
@@ -22,10 +21,9 @@ describe('usePrevious', () => {
   });
 
   it('should track multiple updates', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => usePrevious(value),
-      { initialProps: { value: 1 } }
-    );
+    const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
+      initialProps: { value: 1 },
+    });
 
     expect(result.current).toBeUndefined();
 
@@ -40,10 +38,9 @@ describe('usePrevious', () => {
   });
 
   it('should work with different types', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => usePrevious(value),
-      { initialProps: { value: { count: 0 } } }
-    );
+    const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
+      initialProps: { value: { count: 0 } },
+    });
 
     const firstValue = { count: 0 };
     const secondValue = { count: 1 };
@@ -56,10 +53,9 @@ describe('usePrevious', () => {
   });
 
   it('should handle boolean values', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => usePrevious(value),
-      { initialProps: { value: false } }
-    );
+    const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
+      initialProps: { value: false },
+    });
 
     expect(result.current).toBeUndefined();
 
@@ -71,10 +67,9 @@ describe('usePrevious', () => {
   });
 
   it('should handle null and undefined', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => usePrevious(value),
-      { initialProps: { value: null as any } }
-    );
+    const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
+      initialProps: { value: null as any },
+    });
 
     rerender({ value: undefined });
     expect(result.current).toBe(null);

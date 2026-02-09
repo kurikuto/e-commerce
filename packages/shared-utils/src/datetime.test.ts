@@ -1,14 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-    addDays,
-    daysBetween,
-    formatDate,
-    formatDateTime,
-    formatRelativeTime,
-    fromTimestamp,
-    getCurrentTimestamp,
-    isDateInRange,
-    toTimestamp,
+  addDays,
+  daysBetween,
+  formatDate,
+  formatDateTime,
+  formatRelativeTime,
+  fromTimestamp,
+  getCurrentTimestamp,
+  isDateInRange,
+  toTimestamp,
 } from './datetime';
 
 describe('getCurrentTimestamp', () => {

@@ -1,6 +1,6 @@
 /**
  * アプリケーションエントリーポイント
- * 
+ *
  * Reactアプリケーションを初期化し、DOMにマウントします。
  */
 
@@ -14,7 +14,7 @@ import './index.css';
 
 /**
  * React Query クライアント
- * 
+ *
  * サーバー状態管理とキャッシングを提供します。
  */
 const queryClient = new QueryClient({

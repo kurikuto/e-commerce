@@ -1,6 +1,6 @@
 /**
  * ローディングスピナーコンポーネント
- * 
+ *
  * データ取得中などの非同期処理を示すスピナーです。
  */
 
@@ -30,21 +30,21 @@ export interface LoadingSpinnerProps extends Omit<SpinnerProps, 'label'> {
 
 /**
  * LoadingSpinner コンポーネント
- * 
+ *
  * @example
  * ```tsx
  * <LoadingSpinner message="商品を読み込んでいます..." />
  * ```
  */
-export function LoadingSpinner({ 
+export function LoadingSpinner({
   message = '読み込み中...',
   minHeight,
-  ...spinnerProps 
+  ...spinnerProps
 }: LoadingSpinnerProps) {
   const styles = useStyles();
 
   return (
-    <div 
+    <div
       className={styles.container}
       style={{ minHeight: typeof minHeight === 'number' ? `${minHeight}px` : minHeight }}
     >

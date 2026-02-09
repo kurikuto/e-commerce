@@ -25,11 +25,13 @@ const preview: Preview = {
       return (
         <FluentProvider theme={theme}>
           {/* ストーリーのコンテナスタイル */}
-          <div style={{
-            padding: '2rem',
-            minHeight: '100vh',
-            backgroundColor: theme.colorNeutralBackground1
-          }}>
+          <div
+            style={{
+              padding: '2rem',
+              minHeight: '100vh',
+              backgroundColor: theme.colorNeutralBackground1,
+            }}
+          >
             <Story />
           </div>
         </FluentProvider>
@@ -42,7 +44,7 @@ const preview: Preview = {
     // アクションアドオンの設定
     // イベントハンドラー（onClick等）を自動的にActionsパネルに表示
     actions: {
-      argTypesRegex: '^on[A-Z].*'
+      argTypesRegex: '^on[A-Z].*',
     },
 
     // コントロールアドオンの設定

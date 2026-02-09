@@ -28,7 +28,7 @@ const createMockMatchMedia = (matches: boolean) => {
     onchange: null,
     // Helper to trigger change
     _trigger: (newMatches: boolean) => {
-      listeners.forEach(listener => {
+      listeners.forEach((listener) => {
         listener({ matches: newMatches } as MediaQueryListEvent);
       });
     },
@@ -36,7 +36,9 @@ const createMockMatchMedia = (matches: boolean) => {
 };
 
 describe('useMediaQuery', () => {
-  let mockMatchMedia: ReturnType<typeof createMockMatchMedia> & { _trigger: (matches: boolean) => void };
+  let mockMatchMedia: ReturnType<typeof createMockMatchMedia> & {
+    _trigger: (matches: boolean) => void;
+  };
 
   beforeEach(() => {
     mockMatchMedia = createMockMatchMedia(false) as any;
@@ -114,10 +116,9 @@ describe('useMediaQuery', () => {
   });
 
   it('should update when query changes', async () => {
-    const { result, rerender } = renderHook(
-      ({ query }) => useMediaQuery(query),
-      { initialProps: { query: '(min-width: 768px)' } }
-    );
+    const { result, rerender } = renderHook(({ query }) => useMediaQuery(query), {
+      initialProps: { query: '(min-width: 768px)' },
+    });
 
     expect(result.current).toBe(false);
 

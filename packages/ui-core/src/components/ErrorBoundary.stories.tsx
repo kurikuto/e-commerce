@@ -69,7 +69,8 @@ const meta = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'Reactコンポーネントツリー内のエラーをキャッチし、フォールバックUIを表示するコンポーネント。',
+        component:
+          'Reactコンポーネントツリー内のエラーをキャッチし、フォールバックUIを表示するコンポーネント。',
       },
     },
   },
@@ -147,13 +148,15 @@ export const CustomFallback: Story = {
     children: <ThrowErrorComponent shouldThrow={true} />,
     onError: fn(),
     fallback: (
-      <div style={{
-        padding: '40px',
-        textAlign: 'center',
-        backgroundColor: '#fff4e6',
-        border: '2px solid #ff8c00',
-        borderRadius: '8px'
-      }}>
+      <div
+        style={{
+          padding: '40px',
+          textAlign: 'center',
+          backgroundColor: '#fff4e6',
+          border: '2px solid #ff8c00',
+          borderRadius: '8px',
+        }}
+      >
         <h2>🚧 メンテナンス中</h2>
         <p>現在この機能はメンテナンス中です。</p>
         <p>後ほど再度お試しください。</p>
@@ -182,7 +185,8 @@ export const InteractiveError: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'ボタンをクリックするとエラーが発生し、ErrorBoundaryが動作します。リトライボタンで再度試すことができます。',
+        story:
+          'ボタンをクリックするとエラーが発生し、ErrorBoundaryが動作します。リトライボタンで再度試すことができます。',
       },
     },
   },
@@ -223,7 +227,8 @@ export const MultipleSections: Story = {
   parameters: {
     docs: {
       description: {
-        story: '各セクションを個別のErrorBoundaryで囲むことで、1つのセクションでエラーが発生しても他のセクションは正常に動作し続けます。',
+        story:
+          '各セクションを個別のErrorBoundaryで囲むことで、1つのセクションでエラーが発生しても他のセクションは正常に動作し続けます。',
       },
     },
   },
@@ -241,7 +246,14 @@ export const NestedErrorBoundaries: Story = {
   render: () => (
     <ErrorBoundary
       fallback={
-        <div style={{ padding: '40px', backgroundColor: '#ffe6e6', border: '2px solid #ff0000', borderRadius: '8px' }}>
+        <div
+          style={{
+            padding: '40px',
+            backgroundColor: '#ffe6e6',
+            border: '2px solid #ff0000',
+            borderRadius: '8px',
+          }}
+        >
           <h2>外側のErrorBoundaryでキャッチ</h2>
           <p>内側でエラーが発生しましたが、外側でキャッチしました。</p>
         </div>
@@ -251,7 +263,14 @@ export const NestedErrorBoundaries: Story = {
         <h3>外側のセクション</h3>
         <ErrorBoundary
           fallback={
-            <div style={{ padding: '20px', backgroundColor: '#fff4e6', border: '2px solid #ff8c00', borderRadius: '4px' }}>
+            <div
+              style={{
+                padding: '20px',
+                backgroundColor: '#fff4e6',
+                border: '2px solid #ff8c00',
+                borderRadius: '4px',
+              }}
+            >
               <h4>内側のErrorBoundaryでキャッチ</h4>
               <p>このエラーは内側でハンドリングされています。</p>
             </div>

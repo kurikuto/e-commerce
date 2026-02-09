@@ -27,7 +27,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'ローディング状態を表示するスピナーコンポーネント。非同期処理の進行中であることをユーザーに伝えます。',
+        component:
+          'ローディング状態を表示するスピナーコンポーネント。非同期処理の進行中であることをユーザーに伝えます。',
       },
     },
   },
@@ -133,7 +134,8 @@ export const WithMinHeight: Story = {
  */
 export const LongMessage: Story = {
   args: {
-    message: '大量のデータを処理しています。この処理には数分かかる場合があります。しばらくお待ちください。',
+    message:
+      '大量のデータを処理しています。この処理には数分かかる場合があります。しばらくお待ちください。',
   },
 };
 

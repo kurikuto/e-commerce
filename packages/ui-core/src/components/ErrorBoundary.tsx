@@ -1,6 +1,6 @@
 /**
  * エラーバウンダリコンポーネント
- * 
+ *
  * Reactコンポーネントツリー内のJavaScriptエラーをキャッチし、
  * エラーをログに記録して、フォールバックUIを表示します。
  */
@@ -49,10 +49,10 @@ interface ErrorBoundaryState {
 
 /**
  * ErrorBoundary コンポーネント
- * 
+ *
  * 子コンポーネントでエラーが発生した場合に、
  * アプリケーション全体がクラッシュするのを防ぎます。
- * 
+ *
  * @example
  * ```tsx
  * <ErrorBoundary>

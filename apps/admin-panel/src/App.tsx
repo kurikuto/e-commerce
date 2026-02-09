@@ -1,6 +1,6 @@
 /**
  * アプリケーションのルートコンポーネント
- * 
+ *
  * ルーティング設定とレイアウトを定義します。
  */
 
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
 
 /**
  * Appコンポーネント
- * 
+ *
  * アプリケーションのエントリーポイントです。
  * ルーティングとエラーハンドリングを設定します。
  */
@@ -34,12 +34,12 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to="/products" replace />} />
             <Route path="products" element={<ProductListPage />} />
-            
+
             {/* TODO: 他のページを追加 */}
             {/* <Route path="orders" element={<OrderListPage />} /> */}
             {/* <Route path="customers" element={<CustomerListPage />} /> */}
           </Route>
-          
+
           {/* 404ページ */}
           <Route path="*" element={<div>404 - ページが見つかりません</div>} />
         </Routes>

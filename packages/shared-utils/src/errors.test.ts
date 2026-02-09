@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import {
-    AppError,
-    AuthenticationError,
-    AuthorizationError,
-    ConflictError,
-    InternalServerError,
-    isAppError,
-    NotFoundError,
-    serializeError,
-    ValidationError,
+  AppError,
+  AuthenticationError,
+  AuthorizationError,
+  ConflictError,
+  InternalServerError,
+  isAppError,
+  NotFoundError,
+  serializeError,
+  ValidationError,
 } from './errors';
 
 describe('AppError', () => {
@@ -173,9 +173,7 @@ describe('isAppError', () => {
 
 describe('serializeError', () => {
   it('should serialize AppError correctly', () => {
-    const error = new ValidationError('Invalid input', [
-      { path: 'email', message: 'Required' },
-    ]);
+    const error = new ValidationError('Invalid input', [{ path: 'email', message: 'Required' }]);
 
     const serialized = serializeError(error);
 

@@ -1,6 +1,6 @@
 /**
  * データテーブルコンポーネント
- * 
+ *
  * Fluent UI のテーブルコンポーネントをラップし、
  * 一般的な機能を提供します。
  */
@@ -63,10 +63,10 @@ export interface DataTableProps<T> {
 
 /**
  * DataTable コンポーネント
- * 
+ *
  * データを表形式で表示します。
  * Fluent UI のテーブルをベースに、よく使う機能を統合しています。
- * 
+ *
  * @example
  * ```tsx
  * <DataTable
@@ -102,10 +102,7 @@ export function DataTable<T>({
         <TableHeader>
           <TableRow>
             {columns.map((column) => (
-              <TableHeaderCell
-                key={column.key}
-                style={{ width: column.width }}
-              >
+              <TableHeaderCell key={column.key} style={{ width: column.width }}>
                 {column.label}
               </TableHeaderCell>
             ))}
@@ -115,9 +112,7 @@ export function DataTable<T>({
           {data.map((item, index) => (
             <TableRow key={getRowKey(item, index)}>
               {columns.map((column) => (
-                <TableCell key={column.key}>
-                  {column.render(item, index)}
-                </TableCell>
+                <TableCell key={column.key}>{column.render(item, index)}</TableCell>
               ))}
             </TableRow>
           ))}

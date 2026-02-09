@@ -25,11 +25,46 @@ interface Product {
  * サンプルデータ
  */
 const sampleProducts: Product[] = [
-  { id: '1', name: 'ノートパソコン', category: '電子機器', price: 120000, stock: 15, status: 'active' },
-  { id: '2', name: 'ワイヤレスマウス', category: 'アクセサリー', price: 3500, stock: 50, status: 'active' },
-  { id: '3', name: 'USB-Cケーブル', category: 'アクセサリー', price: 1200, stock: 0, status: 'inactive' },
-  { id: '4', name: '外付けSSD 1TB', category: 'ストレージ', price: 15000, stock: 25, status: 'active' },
-  { id: '5', name: 'Bluetoothスピーカー', category: 'オーディオ', price: 8500, stock: 10, status: 'draft' },
+  {
+    id: '1',
+    name: 'ノートパソコン',
+    category: '電子機器',
+    price: 120000,
+    stock: 15,
+    status: 'active',
+  },
+  {
+    id: '2',
+    name: 'ワイヤレスマウス',
+    category: 'アクセサリー',
+    price: 3500,
+    stock: 50,
+    status: 'active',
+  },
+  {
+    id: '3',
+    name: 'USB-Cケーブル',
+    category: 'アクセサリー',
+    price: 1200,
+    stock: 0,
+    status: 'inactive',
+  },
+  {
+    id: '4',
+    name: '外付けSSD 1TB',
+    category: 'ストレージ',
+    price: 15000,
+    stock: 25,
+    status: 'active',
+  },
+  {
+    id: '5',
+    name: 'Bluetoothスピーカー',
+    category: 'オーディオ',
+    price: 8500,
+    stock: 10,
+    status: 'draft',
+  },
 ];
 
 /**
@@ -62,9 +97,7 @@ const columns: DataTableColumn<Product>[] = [
     label: '在庫',
     width: '15%',
     render: (item) => (
-      <span style={{ color: item.stock === 0 ? '#d13438' : undefined }}>
-        {item.stock}個
-      </span>
+      <span style={{ color: item.stock === 0 ? '#d13438' : undefined }}>{item.stock}個</span>
     ),
     sortable: true,
   },
@@ -80,7 +113,11 @@ const columns: DataTableColumn<Product>[] = [
       } as const;
 
       const config = statusConfig[item.status];
-      return <Badge appearance="filled" color={config.color}>{config.label}</Badge>;
+      return (
+        <Badge appearance="filled" color={config.color}>
+          {config.label}
+        </Badge>
+      );
     },
   },
 ];
@@ -96,18 +133,8 @@ const columnsWithActions: DataTableColumn<Product>[] = [
     width: '150px',
     render: () => (
       <div style={{ display: 'flex', gap: '8px' }}>
-        <Button
-          size="small"
-          icon={<EditRegular />}
-          appearance="subtle"
-          aria-label="編集"
-        />
-        <Button
-          size="small"
-          icon={<DeleteRegular />}
-          appearance="subtle"
-          aria-label="削除"
-        />
+        <Button size="small" icon={<EditRegular />} appearance="subtle" aria-label="編集" />
+        <Button size="small" icon={<DeleteRegular />} appearance="subtle" aria-label="削除" />
       </div>
     ),
   },
@@ -135,7 +162,8 @@ const meta = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'データをテーブル形式で表示する汎用コンポーネント。ソート機能や空データ時の表示をサポートします。',
+        component:
+          'データをテーブル形式で表示する汎用コンポーネント。ソート機能や空データ時の表示をサポートします。',
       },
     },
   },
