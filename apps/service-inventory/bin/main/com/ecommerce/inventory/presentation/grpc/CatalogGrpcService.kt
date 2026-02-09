@@ -1,12 +1,12 @@
 /**
- * Infrastructure Layer - gRPC Service Implementation
+ * Presentation Layer - gRPC Service Implementation
  *
  * gRPCサービスの実装です。
  * Protocol Buffersで定義されたサービスを実装し、
  * ユースケースを呼び出します。
  */
 
-package com.ecommerce.inventory.infrastructure.grpc
+package com.ecommerce.inventory.presentation.grpc
 
 import com.ecommerce.catalog.proto.*
 import com.ecommerce.inventory.domain.model.Product
