@@ -137,7 +137,7 @@ e-commerce/
 - **Node.js** 20.x 以上
 - **pnpm** 8.x 以上
 - **Docker** & **Docker Compose**
-- **Java** 17 以上（Kotlinビルド用）
+- **Java** 21 以上（Kotlinビルド用）
 - **Gradle** 8.x 以上
 
 ### 1. リポジトリのクローン

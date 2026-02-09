@@ -20,7 +20,7 @@
 | ------- | -------------- | -------------- |
 | Node.js | 20.0.0         | 20.11+ (LTS)   |
 | pnpm    | 9.0.0          | 9.15.0         |
-| JDK     | 17             | 21             |
+| JDK     | 21             | 21             |
 | Docker  | 20.0           | 最新           |
 | Kotlin  | 2.0.0          | 2.0.21         |
 
@@ -69,7 +69,20 @@ pnpm install
 
 #### 3. 環境変数設定
 
-`.env.local`ファイルを作成:
+`.env`ファイルを作成:
+
+```bash
+# ルートディレクトリ（必要に応じて）
+cp .env.example .env
+
+# admin-panel
+cp apps/admin-panel/.env.example apps/admin-panel/.env
+
+# service-inventory
+cp apps/service-inventory/.env.example apps/service-inventory/.env
+```
+
+各環境変数の例:
 
 ```bash
 # Database
@@ -394,13 +407,14 @@ cd apps/service-inventory
 
 **総テスト数**: 139テスト
 
-| パッケージ       | テスト数 | 内容                                            |
-| ---------------- | -------- | ----------------------------------------------- |
-| shared-utils     | 96       | エラー、UUID、バリデーション、日時、フォーマット |
-| ui-core          | 35       | カスタムフック（5種類）                          |
-| admin-panel      | 8        | 商品サービスAPI                                  |
+| パッケージ   | テスト数 | 内容                                             |
+| ------------ | -------- | ------------------------------------------------ |
+| shared-utils | 96       | エラー、UUID、バリデーション、日時、フォーマット |
+| ui-core      | 35       | カスタムフック（5種類）                          |
+| admin-panel  | 8        | 商品サービスAPI                                  |
 
 **テストフレームワーク**:
+
 - Vitest 4.0.17
 - @testing-library/react 16.3.1
 - happy-dom（DOM環境）
@@ -409,16 +423,17 @@ cd apps/service-inventory
 
 **総テスト数**: 45テスト
 
-| テストクラス                  | テスト数 | 内容                             |
-| ----------------------------- | -------- | -------------------------------- |
-| ProductTest                   | 16       | ドメインモデル、ビジネスロジック  |
-| ProductRepositoryImplTest     | 11       | データベースアクセス層（H2）      |
-| GetProductUseCaseTest         | 2        | 商品取得ユースケース              |
-| ListProductsUseCaseTest       | 5        | 商品一覧取得ユースケース          |
-| CreateProductUseCaseTest      | 2        | 商品作成ユースケース              |
-| ProductId/TenantId/PriceTest  | 9        | 値オブジェクト                    |
+| テストクラス                 | テスト数 | 内容                             |
+| ---------------------------- | -------- | -------------------------------- |
+| ProductTest                  | 16       | ドメインモデル、ビジネスロジック |
+| ProductRepositoryImplTest    | 11       | データベースアクセス層（H2）     |
+| GetProductUseCaseTest        | 2        | 商品取得ユースケース             |
+| ListProductsUseCaseTest      | 5        | 商品一覧取得ユースケース         |
+| CreateProductUseCaseTest     | 2        | 商品作成ユースケース             |
+| ProductId/TenantId/PriceTest | 9        | 値オブジェクト                   |
 
 **テストフレームワーク**:
+
 - JUnit Jupiter 5.10.1
 - MockK 1.13.9
 - kotlinx-coroutines-test 1.8.1
@@ -508,6 +523,7 @@ class GetProductUseCaseTest {
 ```
 
 **ポイント**:
+
 - `runTest`: コルーチンテスト用のスコープ
 - `coEvery`: suspend関数のモック
 - `coVerify`: suspend関数の呼び出し検証
@@ -708,6 +724,7 @@ pnpm test:coverage
 ```
 
 カバレッジレポートは以下に出力されます：
+
 - フロントエンド: `coverage/index.html`
 - バックエンド: `build/reports/jacoco/test/html/index.html`
 
